@@ -85,7 +85,7 @@ const deudasIniciales: Deuda[] = [
     monto: 800,
     costoProveedor: 500,
     estado: 'Pendiente',
-    descripción: 'Mantenimiento mensual'
+    descripcion: 'Mantenimiento mensual'
   },
   {
     id: '4',

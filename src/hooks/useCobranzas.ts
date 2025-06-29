@@ -43,75 +43,148 @@ export interface ConfiguracionCorreoData {
   habilitarNotificaciones: boolean;
 }
 
-// Datos de ejemplo
-const clientesIniciales: Cliente[] = [
-  {
-    id: '1',
-    nombre: 'Juan Pérez',
-    email: 'juan.perez@email.com',
-    telefono: '+1234567890',
-    fechaCreacion: new Date('2024-01-15')
-  },
-  {
-    id: '2',
-    nombre: 'María García',
-    email: 'maria.garcia@email.com',
-    telefono: '+1234567891',
-    fechaCreacion: new Date('2024-02-10')
-  },
-  {
-    id: '3',
-    nombre: 'Carlos López',
-    email: 'carlos.lopez@email.com',
-    telefono: '+1234567892',
-    fechaCreacion: new Date('2024-03-05')
-  }
-];
+// Generar 90 clientes de ejemplo
+const generarClientes = (): Cliente[] => {
+  const nombres = [
+    'Juan Pérez', 'María García', 'Carlos López', 'Ana Martínez', 'Luis Rodríguez',
+    'Carmen Sánchez', 'José González', 'Isabel Fernández', 'Manuel Díaz', 'Rosa Torres',
+    'Antonio Ruiz', 'Francisca Moreno', 'Francisco Jiménez', 'Teresa Álvarez', 'Rafael Romero',
+    'Pilar Navarro', 'Miguel Ramos', 'Dolores Gil', 'Pedro Serrano', 'Concepción Blanco',
+    'Jesús Vega', 'Josefa Molina', 'Ángel Castro', 'Mercedes Ortega', 'Daniel Delgado',
+    'María José Herrera', 'David Peña', 'Antonia Guerrero', 'Alejandro Prieto', 'Encarnación Méndez',
+    'Javier Cruz', 'Cristina Iglesias', 'Pablo Vargas', 'Amparo Calvo', 'Adrián Rubio',
+    'Esperanza Santana', 'Iván Aguilar', 'Inmaculada Campos', 'Rubén Vázquez', 'Milagros León',
+    'Sergio Cabrera', 'Remedios Ramírez', 'Fernando Garrido', 'Soledad Morales', 'Alberto Marín',
+    'Araceli Domínguez', 'Roberto Santos', 'Manuela Soto', 'Eduardo Herrero', 'Concepción Lorenzo',
+    'Víctor Hidalgo', 'Estrella Montero', 'Ricardo Ibáñez', 'Victoria Durán', 'Ignacio Moya',
+    'Purificación Ferrer', 'Raúl Santiago', 'Begoña Caballero', 'Gabriel Carrasco', 'Natividad Nieto',
+    'Emilio Cano', 'Rocío Reyes', 'Gonzalo Cortés', 'Virtudes Lozano', 'Marcos Gutiérrez',
+    'Ascensión Benítez', 'Enrique Valdés', 'Angustias Moreno', 'Tomás Castillo', 'Sagrario Suárez',
+    'Lorenzo Hernández', 'Guillermo Román', 'Nieves Velasco', 'César Medina', 'Amparo Sanz',
+    'Salvador Silva', 'Luz Crespo', 'Joaquín Molina', 'Consolación Montoya', 'Andrés Galván',
+    'Rosario Pascual', 'Hugo Carmona', 'Milagros Villanueva', 'Arturo Mesa', 'Guadalupe Herrera',
+    'Nicolás Espinosa', 'Remedios López', 'Alfredo Rojas', 'Esperanza Aguilera', 'Jaime Flores',
+    'Visitación Muñoz', 'Rodrigo Peña', 'Rosario Miranda', 'Félix Gallego', 'Nieves Contreras'
+  ];
 
-const deudasIniciales: Deuda[] = [
-  {
-    id: '1',
-    clienteId: '1',
-    cliente: 'Juan Pérez',
-    fechaVencimiento: new Date(),
-    monto: 1500,
-    costoProveedor: 1000,
-    estado: 'Vencida',
-    descripcion: 'Servicio de hosting mensual'
-  },
-  {
-    id: '2',
-    clienteId: '2',
-    cliente: 'María García',
-    fechaVencimiento: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    monto: 2500,
-    costoProveedor: 1800,
-    estado: 'Pendiente',
-    descripcion: 'Desarrollo web personalizado'
-  },
-  {
-    id: '3',
-    clienteId: '3',
-    cliente: 'Carlos López',
-    fechaVencimiento: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    monto: 800,
-    costoProveedor: 500,
-    estado: 'Pendiente',
-    descripcion: 'Mantenimiento mensual'
-  },
-  {
-    id: '4',
-    clienteId: '1',
-    cliente: 'Juan Pérez',
-    fechaVencimiento: new Date(Date.now() - 24 * 60 * 60 * 1000),
-    monto: 1200,
-    costoProveedor: 800,
-    estado: 'Vencida',
-    descripcion: 'Dominio anual'
-  }
-];
+  const dominios = ['gmail.com', 'hotmail.com', 'yahoo.com', 'outlook.com', 'empresa.com', 'negocio.net'];
+  
+  return nombres.map((nombre, index) => {
+    const id = (index + 1).toString();
+    const nombreSinEspacios = nombre.toLowerCase().replace(/\s+/g, '').replace(/[áéíóú]/g, (m) => {
+      const map = { 'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u' };
+      return map[m] || m;
+    });
+    const dominio = dominios[index % dominios.length];
+    const fechaBase = new Date('2024-01-01');
+    
+    return {
+      id,
+      nombre,
+      email: `${nombreSinEspacios}${index}@${dominio}`,
+      telefono: `+52 55 ${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`,
+      fechaCreacion: new Date(fechaBase.getTime() + Math.random() * 365 * 24 * 60 * 60 * 1000)
+    };
+  });
+};
 
-const abonosIniciales: Abono[] = [];
+// Generar deudas para los clientes
+const generarDeudas = (clientes: Cliente[]): Deuda[] => {
+  const servicios = [
+    'Hosting web mensual', 'Dominio anual', 'Desarrollo web', 'Mantenimiento web',
+    'Diseño gráfico', 'Marketing digital', 'SEO mensual', 'Tienda online',
+    'Aplicación móvil', 'Consultoría IT', 'Backup en la nube', 'SSL certificado',
+    'Optimización web', 'Campaña publicitaria', 'Rediseño website', 'E-commerce',
+    'Soporte técnico', 'Migración de datos', 'Integración API', 'Sistema CRM'
+  ];
+
+  const estados: Deuda['estado'][] = ['Pendiente', 'Vencida', 'Pagada', 'En Proceso'];
+  const deudas: Deuda[] = [];
+  let deudaId = 1;
+
+  clientes.forEach((cliente, clienteIndex) => {
+    // Cada cliente tendrá entre 1 y 4 deudas
+    const numDeudas = Math.floor(Math.random() * 4) + 1;
+    
+    for (let i = 0; i < numDeudas; i++) {
+      const servicio = servicios[Math.floor(Math.random() * servicios.length)];
+      const costoBase = Math.floor(Math.random() * 8000) + 500; // Entre $500 y $8500
+      const margen = 0.3 + Math.random() * 0.5; // Margen entre 30% y 80%
+      const monto = Math.floor(costoBase * (1 + margen));
+      
+      // Fechas de vencimiento variadas
+      const diasBase = Math.floor(Math.random() * 60) - 30; // Entre -30 y +30 días desde hoy
+      const fechaVencimiento = new Date();
+      fechaVencimiento.setDate(fechaVencimiento.getDate() + diasBase);
+      
+      // Estado basado en la fecha
+      let estado: Deuda['estado'] = 'Pendiente';
+      if (diasBase < -7) {
+        estado = Math.random() > 0.3 ? 'Vencida' : 'En Proceso';
+      } else if (diasBase < 0) {
+        estado = Math.random() > 0.5 ? 'Vencida' : 'Pendiente';
+      } else if (Math.random() > 0.8) {
+        estado = 'Pagada';
+      }
+
+      deudas.push({
+        id: deudaId.toString(),
+        clienteId: cliente.id,
+        cliente: cliente.nombre,
+        fechaVencimiento,
+        monto,
+        costoProveedor: costoBase,
+        estado,
+        descripcion: servicio
+      });
+
+      deudaId++;
+    }
+  });
+
+  return deudas;
+};
+
+// Generar algunos abonos de ejemplo
+const generarAbonosIniciales = (clientes: Cliente[]): Abono[] => {
+  const abonos: Abono[] = [];
+  const frecuencias: Abono['frecuencia'][] = ['Diario', 'Semanal', 'Quincenal', 'Mensual'];
+  
+  // Solo algunos clientes tendrán abonos configurados (aproximadamente 20%)
+  const clientesConAbonos = clientes.slice(0, 18); // Primeros 18 clientes
+  
+  clientesConAbonos.forEach((cliente, index) => {
+    const frecuencia = frecuencias[Math.floor(Math.random() * frecuencias.length)];
+    const montoTotal = Math.floor(Math.random() * 5000) + 1000; // Entre $1000 y $6000
+    
+    // Fecha de próximo pago
+    const diasHastaProximo = Math.floor(Math.random() * 15) - 5; // Entre -5 y +10 días
+    const fechaProximoPago = new Date();
+    fechaProximoPago.setDate(fechaProximoPago.getDate() + diasHastaProximo);
+    
+    const estado: Abono['estado'] = diasHastaProximo < -2 ? 'Pendiente' : 'Pendiente';
+    
+    abonos.push({
+      id: (index + 1).toString(),
+      clienteId: cliente.id,
+      cliente: cliente.nombre,
+      frecuencia,
+      deudasIncluidas: ['1', '2'], // IDs de ejemplo
+      montoTotal,
+      fechaCreacion: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
+      fechaProximoPago,
+      estado,
+      notas: `Abono ${frecuencia.toLowerCase()} configurado automáticamente`
+    });
+  });
+
+  return abonos;
+};
+
+// Datos de ejemplo con 90 clientes
+const clientesIniciales = generarClientes();
+const deudasIniciales = generarDeudas(clientesIniciales);
+const abonosIniciales = generarAbonosIniciales(clientesIniciales);
 
 export const useCobranzas = () => {
   const [clientes, setClientes] = useState<Cliente[]>(clientesIniciales);

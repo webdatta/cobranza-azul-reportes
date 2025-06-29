@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo } from 'react';
 
 export interface Cliente {
@@ -18,6 +17,19 @@ export interface Deuda {
   costoProveedor: number;
   estado: 'Pendiente' | 'Vencida' | 'Pagada' | 'En Proceso';
   descripcion?: string;
+}
+
+export interface Abono {
+  id: string;
+  clienteId: string;
+  cliente: string;
+  frecuencia: 'Diario' | 'Semanal' | 'Quincenal' | 'Mensual';
+  deudasIncluidas: string[]; // IDs de las deudas
+  montoTotal: number;
+  fechaCreacion: Date;
+  fechaProximoPago: Date;
+  estado: 'Pendiente' | 'Pagado';
+  notas?: string;
 }
 
 export interface ConfiguracionCorreoData {
@@ -99,9 +111,12 @@ const deudasIniciales: Deuda[] = [
   }
 ];
 
+const abonosIniciales: Abono[] = [];
+
 export const useCobranzas = () => {
   const [clientes, setClientes] = useState<Cliente[]>(clientesIniciales);
   const [deudas, setDeudas] = useState<Deuda[]>(deudasIniciales);
+  const [abonos, setAbonos] = useState<Abono[]>(abonosIniciales);
   const [configuracionCorreo, setConfiguracionCorreo] = useState<ConfiguracionCorreoData>({
     servidorSMTP: '',
     puerto: 587,
@@ -212,6 +227,31 @@ export const useCobranzas = () => {
     setDeudas(prev => prev.filter(deuda => deuda.id !== id));
   };
 
+  const agregarAbono = (abono: Omit<Abono, 'id'>) => {
+    const nuevoAbono: Abono = {
+      ...abono,
+      id: Date.now().toString()
+    };
+    setAbonos(prev => [...prev, nuevoAbono]);
+    return nuevoAbono;
+  };
+
+  const actualizarAbono = (id: string, datosActualizados: Partial<Abono>) => {
+    setAbonos(prev => prev.map(abono => 
+      abono.id === id ? { ...abono, ...datosActualizados } : abono
+    ));
+  };
+
+  const eliminarAbono = (id: string) => {
+    setAbonos(prev => prev.filter(abono => abono.id !== id));
+  };
+
+  const marcarAbonoPagado = (id: string) => {
+    setAbonos(prev => prev.map(abono => 
+      abono.id === id ? { ...abono, estado: 'Pagado' as const } : abono
+    ));
+  };
+
   const actualizarConfiguracionCorreo = (config: ConfiguracionCorreoData) => {
     setConfiguracionCorreo(config);
   };
@@ -220,6 +260,7 @@ export const useCobranzas = () => {
     // Datos
     clientes,
     deudas,
+    abonos,
     configuracionCorreo,
     resumen,
     clientesConDeudas,
@@ -233,6 +274,10 @@ export const useCobranzas = () => {
     agregarDeuda,
     actualizarDeuda,
     eliminarDeuda,
+    agregarAbono,
+    actualizarAbono,
+    eliminarAbono,
+    marcarAbonoPagado,
     actualizarConfiguracionCorreo
   };
 };

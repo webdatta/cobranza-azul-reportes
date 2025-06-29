@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Mail, Calendar, DollarSign, Users, AlertTriangle } from 'lucide-react';
+import { Plus, Mail, Calendar, DollarSign, Users, AlertTriangle, Wallet } from 'lucide-react';
 import { ClientesForm } from '@/components/ClientesForm';
 import { DeudasForm } from '@/components/DeudasForm';
+import { AbonosForm } from '@/components/AbonosForm';
 import { ConfiguracionCorreo } from '@/components/ConfiguracionCorreo';
 import { useCobranzas } from '@/hooks/useCobranzas';
 
@@ -17,6 +18,7 @@ const Index = () => {
     { id: 'dashboard', label: 'Dashboard', icon: DollarSign },
     { id: 'clientes', label: 'Clientes', icon: Users },
     { id: 'deudas', label: 'Deudas', icon: Calendar },
+    { id: 'abonos', label: 'Abonos', icon: Wallet },
     { id: 'configuracion', label: 'Configuración', icon: Mail }
   ];
 
@@ -179,6 +181,7 @@ const Index = () => {
 
             {activeTab === 'clientes' && <ClientesForm />}
             {activeTab === 'deudas' && <DeudasForm />}
+            {activeTab === 'abonos' && <AbonosForm />}
             {activeTab === 'configuracion' && <ConfiguracionCorreo />}
           </div>
         </div>
